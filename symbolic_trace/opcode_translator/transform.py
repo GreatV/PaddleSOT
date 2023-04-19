@@ -23,9 +23,12 @@ class ConvertGuard:
         log(1, "[start_bytecode_transform] end transform\n")
         Callbacks().set_on_convert(self.old)
 
+pycode_set = set()
+
 def eval_frame_callback(frame):
     if frame.f_code.co_name not in SKIP_TRANSLATE_NAMES:
         log(2, "[eval_frame_callback] want translate: " + frame.f_code.co_name + "\n")
+        pycode_set.add(frame.f_code)
         new_code = transform_opcode(frame)
         retval = CustomCode(new_code)
         return retval
